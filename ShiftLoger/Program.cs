@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
+using ShiftLoger.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +16,15 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    SeedData.InitializeLogData(services);
+}
+
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

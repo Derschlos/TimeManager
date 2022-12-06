@@ -4,7 +4,7 @@ namespace ShiftLoger.Models
 {
     public class LogModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string UserId { get; set; }
 
         [DataType(DataType.Date)]
@@ -15,6 +15,10 @@ namespace ShiftLoger.Models
 
         [DataType(DataType.Time)]
         public TimeSpan? LogTime { get; set; }
+
+        [DataType(DataType.Text)]
+        public string? Comment { get; set; }
+
 
     }
 }
