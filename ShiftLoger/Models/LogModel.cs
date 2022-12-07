@@ -8,7 +8,7 @@ namespace ShiftLoger.Models
         public string UserId { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime? StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? EndTime { get; set; }
@@ -19,6 +19,14 @@ namespace ShiftLoger.Models
         [DataType(DataType.Text)]
         public string? Comment { get; set; }
 
+        //public LogModel(string userId, DateTime start,DateTime? end, string? comment)
+        //{
+        //    Id = Guid.NewGuid().ToString();
+        //    StartTime = start;
+        //    EndTime = end;
+        //    Comment = comment;
+            
+        //}
 
     }
 }
