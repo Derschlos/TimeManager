@@ -15,6 +15,14 @@ namespace ShiftLoger.Repositories
             _log = from l in _context.LogModel select l;
         }
 
+        public List<LogModel> AddUsers(List<LogModel> Logs)
+        {
+            _context.AddRange(Logs);
+            _context.SaveChanges();
+            return Logs;
+        }
+
+
         public LogModel GetLastLog(string UserId)
         {
             return _log.

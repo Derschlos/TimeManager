@@ -10,6 +10,7 @@ namespace ShiftLoger.Controllers
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
+        private static readonly List<string> NoSummaries = new List<string>();
 
         private readonly ILogger<WeatherForecastController> _logger;
 
@@ -25,7 +26,8 @@ namespace ShiftLoger.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                Summary = NoSummaries.LastOrDefault()
+                //Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
         }

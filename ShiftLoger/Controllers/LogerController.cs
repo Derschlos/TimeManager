@@ -51,27 +51,25 @@ namespace Loger.Controllers
         [HttpPost]
         public LogModel Post(string UserId, string? comment)
         {
+            var newLog= new LogModel();
             if (string.IsNullOrEmpty(UserId))
             {
                 return null;
             }
             var now = DateTime.Now;
             var latestLog = _unitOfWork.Log.GetLastLog(UserId);
+
             if (latestLog.EndTime != null)
             {
-                var newLog = new LogModel {
+                newLog = new LogModel {
                     UserId = UserId,
                     StartTime = now,
                     Comment = comment };
-                _context.Add(newLog);
-                _context.SaveChanges();
+                _unitOfWork.Log.AddUsers(new List<LogModel> { newLog });
                 return newLog;
             }
-            var daysBetweenStartAndEnd = (now - latestLog.StartTime).TotalDays;
-            //for (int i = ((int)daysBetweenStartAndEnd); i >= 0; i--)
-            //{
 
-            //}
+            var daysBetweenStartAndEnd = (now - latestLog.StartTime).TotalDays;
             List<LogModel> LogsBetweenDates = Enumerable.Range(1, (int)daysBetweenStartAndEnd).Select(index =>
                 new LogModel {
                     UserId = UserId,
@@ -82,9 +80,25 @@ namespace Loger.Controllers
                 }
                 ).ToList();
 
-            _context.SaveChanges();
+            if (LogsBetweenDates.Any())
+            {
+                latestLog.EndTime = latestLog.StartTime.Date.AddHours(24);
+                latestLog.calculateLogTime();
+                _unitOfWork.Log.UpdateLog(latestLog.Id);
 
-            return new LogModel{ };
+                LogsBetweenDates.LastOrDefault().EndTime = now;
+                LogsBetweenDates.LastOrDefault().calculateLogTime();
+                newLog = LogsBetweenDates.LastOrDefault();
+            }
+            else
+            {
+                newLog = latestLog;
+                newLog.EndTime = now;
+                newLog.calculateLogTime();
+
+            }
+
+            return newLog;
         }
 
         // PUT api/<ValuesController>/5

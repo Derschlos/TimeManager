@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
 using ShiftLoger.Data;
+using ShiftLoger.Interfaces;
+using ShiftLoger.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+AddScoped();
 
 var app = builder.Build();
 
@@ -37,3 +41,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+void AddScoped()
+{
+    builder.Services.AddScoped<ILogRepository, LogRepository>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+}

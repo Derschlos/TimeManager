@@ -9,7 +9,7 @@ namespace ShiftLoger.Interfaces
 
         LogModel GetLogById(string id);
         LogModel UpdateLog(string id);
-        LogModel AddUser(LogModel Log);
+        List<LogModel> AddUsers(List<LogModel> Log);
 
     }
 }
