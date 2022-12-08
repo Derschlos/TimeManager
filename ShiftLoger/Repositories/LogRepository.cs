@@ -15,7 +15,7 @@ namespace ShiftLoger.Repositories
             _log = from l in _context.LogModel select l;
         }
 
-        public List<LogModel> AddUsers(List<LogModel> Logs)
+        public List<LogModel> AddLogs(List<LogModel> Logs)
         {
             _context.AddRange(Logs);
             _context.SaveChanges();
@@ -27,8 +27,7 @@ namespace ShiftLoger.Repositories
         {
             return _log.
                 Where(log => log.UserId.Equals(UserId)).
-                OrderByDescending(log => log.StartTime).
-                Max();
+                OrderByDescending(log => log.StartTime).FirstOrDefault();
         }
 
 
@@ -45,9 +44,18 @@ namespace ShiftLoger.Repositories
             throw new NotImplementedException();
         }
 
-        public LogModel UpdateLog(string id)
+        public ICollection<LogModel> GetLogsByMonth(string UserId, int Month)
         {
-            throw new NotImplementedException();
+            return new List<LogModel>(_log.
+                Where(log => log.UserId.Equals(UserId)).
+                Where(log => log.StartTime.Month == Month));
+        }
+
+        public LogModel UpdateLog(LogModel Log)
+        {
+            _context.Update(Log);
+            _context.SaveChanges();
+            return Log;
         }
     }
 }

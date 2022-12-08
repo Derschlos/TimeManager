@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
 using ShiftLoger.Data;
+using ShiftLoger.Factories;
 using ShiftLoger.Interfaces;
 using ShiftLoger.Repositories;
 
@@ -23,7 +24,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    SeedData.InitializeLogData(services);
+    var logFactory = services.GetRequiredService<ILogFactory>();
+    SeedData.InitializeLogData(services, logFactory);
 }
 
 
@@ -47,4 +49,5 @@ void AddScoped()
 {
     builder.Services.AddScoped<ILogRepository, LogRepository>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+    builder.Services.AddScoped<ILogFactory, LogFactory>();
 }

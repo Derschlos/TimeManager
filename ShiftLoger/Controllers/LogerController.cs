@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShiftLoger.Contexts;
+using ShiftLoger.Interfaces;
 using ShiftLoger.Models;
 using ShiftLoger.Repositories;
 using System.Linq;
@@ -12,7 +13,9 @@ namespace Loger.Controllers
     [ApiController]
     public class LogerController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogFactory _logFactory;
+
 
         //private readonly ShiftLogerContext _context;
 
@@ -21,22 +24,20 @@ namespace Loger.Controllers
         //    _context = context;
         //}
 
-        public LogerController(UnitOfWork unitOfWork)
+        public LogerController(IUnitOfWork unitOfWork, ILogFactory logFactory)
         {
             _unitOfWork = unitOfWork;
+            _logFactory = logFactory;
         }
 
-        // GET: api/<ValuesController>
-        //[HttpGet]
-        //public IEnumerable<LogModel> Get()//IEnumerable<string> Get()
-        //{
-        //    var logs = from l in _context.LogModel select l;
-        //    var latestLogs = logs.
-        //        Where(log => log.UserId.Equals("ab")).
-        //        OrderByDescending(log => log.StartTime).
-        //        Take(3);
-        //    return latestLogs;
-        //}
+        //GET: api/<ValuesController>/587-342/Month/12
+        // GetLogs for a given Month
+        [HttpGet("{UserId}/Month/{Month}")]
+        public IEnumerable<LogModel> Get(string UserId, int Month)
+        {
+            
+            return _unitOfWork.Log.GetLogsByMonth(UserId, Month);
+        }
 
         // GET api/<ValuesController>/5
         [HttpGet("{UserId}")]
@@ -48,63 +49,70 @@ namespace Loger.Controllers
 
         // POST api/<ValuesController>
         //[FromBody] int Id
+        // Checks if a Log without EndTime exists, then either creates a new Log or
+        // fills the Db with Logs till the EndDate is reached.
+        // You can only have logs from Hour 0 to 24 of any given Day
+
         [HttpPost]
         public LogModel Post(string UserId, string? comment)
         {
-            var newLog= new LogModel();
+            var newLog= new LogModel(UserId);
             if (string.IsNullOrEmpty(UserId))
             {
                 return null;
             }
             var now = DateTime.Now;
-            var latestLog = _unitOfWork.Log.GetLastLog(UserId);
+            var latestLog = _unitOfWork.Log.GetLastLog(UserId);         
 
-            if (latestLog.EndTime != null)
+            if (latestLog == null || latestLog.EndTime != null)
             {
-                newLog = new LogModel {
-                    UserId = UserId,
-                    StartTime = now,
-                    Comment = comment };
-                _unitOfWork.Log.AddUsers(new List<LogModel> { newLog });
+                newLog = _logFactory.CreateNewLog(UserId, comment);
+                _unitOfWork.Log.AddLogs(new List<LogModel> { newLog });
                 return newLog;
             }
 
-            var daysBetweenStartAndEnd = (now - latestLog.StartTime).TotalDays;
-            List<LogModel> LogsBetweenDates = Enumerable.Range(1, (int)daysBetweenStartAndEnd).Select(index =>
-                new LogModel {
-                    UserId = UserId,
-                    StartTime = latestLog.StartTime.Date.AddDays(index),
-                    EndTime = latestLog.StartTime.Date.AddDays(index).AddHours(24),
-                    LogTime = TimeSpan.FromDays(1),
-                    Comment = comment
-                }
-                ).ToList();
+            List<LogModel> LogsBetweenDates = _logFactory.
+                CreateLogsSpaningDays(UserId,latestLog.StartTime, now, comment);
 
             if (LogsBetweenDates.Any())
             {
-                latestLog.EndTime = latestLog.StartTime.Date.AddHours(24);
-                latestLog.calculateLogTime();
-                _unitOfWork.Log.UpdateLog(latestLog.Id);
+                latestLog.EndTime = latestLog.
+                    StartTime.
+                    Date.
+                    AddHours(24).
+                    Subtract(new TimeSpan(1));
 
-                LogsBetweenDates.LastOrDefault().EndTime = now;
-                LogsBetweenDates.LastOrDefault().calculateLogTime();
-                newLog = LogsBetweenDates.LastOrDefault();
+                latestLog.LogTime = _logFactory.CalculateLogTime(latestLog);
+                _unitOfWork.Log.UpdateLog(latestLog);
+
+                if (LogsBetweenDates.FirstOrDefault().StartTime.Date == latestLog.StartTime.Date)
+                {
+                    LogsBetweenDates.RemoveAt(0);
+                }
+
+                newLog = LogsBetweenDates.Last();
+                newLog.EndTime = now;
+                newLog.LogTime = _logFactory.CalculateLogTime(newLog);
+                _unitOfWork.Log.AddLogs(LogsBetweenDates);
             }
             else
             {
+                
+                latestLog.EndTime = now;
+                latestLog.LogTime = _logFactory.CalculateLogTime(latestLog);
+                _unitOfWork.Log.UpdateLog(latestLog);
                 newLog = latestLog;
-                newLog.EndTime = now;
-                newLog.calculateLogTime();
 
             }
-
             return newLog;
         }
+
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
         }
 
         // DELETE api/<ValuesController>/5
@@ -112,16 +120,5 @@ namespace Loger.Controllers
         public void Delete(int id)
         {
         }
-        //public LogModel createNewModel(DateTime start, string userId, string? comment)
-        //{
-        //    var newLog = new LogModel
-        //    {
-        //        //Id = Guid.NewGuid().ToString(),
-        //        userId = userId,
-        //        startTime = start,
-        //        comment = comment
-        //    };
-        //    return newLog;
-        //}
     }
 }

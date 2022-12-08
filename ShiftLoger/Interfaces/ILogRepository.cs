@@ -8,8 +8,9 @@ namespace ShiftLoger.Interfaces
         LogModel GetLastLog(string UserId);
 
         LogModel GetLogById(string id);
-        LogModel UpdateLog(string id);
-        List<LogModel> AddUsers(List<LogModel> Log);
+        LogModel UpdateLog(LogModel Log);
+        List<LogModel> AddLogs(List<LogModel> Log);
+        ICollection<LogModel> GetLogsByMonth(string UserId,int Month);
 
     }
 }

@@ -4,6 +4,12 @@ namespace ShiftLoger.Models
 {
     public class LogModel
     {
+        public LogModel(string UserId)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.UserId = UserId;
+        }
+
         public string Id { get; set; }
         public string UserId { get; set; }
 
@@ -16,27 +22,8 @@ namespace ShiftLoger.Models
         [DataType(DataType.Time)]
         public TimeSpan? LogTime { get; set; }
 
+
         [DataType(DataType.Text)]
         public string? Comment { get; set; }
-        
-        public TimeSpan calculateLogTime()
-        {
-            if (EndTime == null)
-            {
-                return TimeSpan.Zero;
-            }
-            LogTime = EndTime - StartTime;
-            return LogTime.Value;
-        }
-
-        //public LogModel(string userId, DateTime start,DateTime? end, string? comment)
-        //{
-        //    Id = Guid.NewGuid().ToString();
-        //    StartTime = start;
-        //    EndTime = end;
-        //    Comment = comment;
-            
-        //}
-
     }
 }

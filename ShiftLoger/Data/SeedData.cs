@@ -1,13 +1,14 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
+using ShiftLoger.Interfaces;
 using ShiftLoger.Models;
 
 namespace ShiftLoger.Data
 {
     public class SeedData
     {
-        public static void InitializeLogData(IServiceProvider serviceProvider)
+        public static void InitializeLogData(IServiceProvider serviceProvider, ILogFactory logFactory)
         {
             using (var context = new ShiftLogerContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ShiftLogerContext>>()))
@@ -20,51 +21,46 @@ namespace ShiftLoger.Data
                 var now = DateTime.Now;
                 var commentCounter = 0;
                 var ModelsToAdd = new List<LogModel>() {
-                    new LogModel
+                    new LogModel("a")
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        UserId = "a",
                         StartTime = now.Subtract(oneDay * 3),
                         EndTime = now.Subtract(oneDay * 3).AddHours(5).AddMinutes(17),
                         Comment = $"This is comment {++commentCounter}"
                     },
-                    new LogModel
+                    new LogModel("a")
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        UserId = "a",
                         StartTime = now.Subtract(oneDay * 2),
                         EndTime = now.Subtract(oneDay * 2).AddHours(3).AddMinutes(30),
                         Comment = $"This is comment {++commentCounter}"
                     },
-                    new LogModel
+                    new LogModel("a")
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        UserId = "a",
                         StartTime = now.Subtract(oneDay * 1),
-                        EndTime = now.Subtract(oneDay * 1).AddHours(9),
+                        EndTime = now.Subtract(oneDay * 1).AddHours(8),
                         Comment = $"This is comment {++commentCounter}"
                     },
-                    new LogModel
+                    new LogModel("b")
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        UserId = "b",
-                        StartTime = now.Subtract(oneDay * 3),
-                        EndTime = now.Subtract(oneDay * 3).AddHours(5),
-                        Comment = $"This is the only comment for b"
+                        StartTime = now.Subtract(oneDay * 7),
+                        EndTime = now.Subtract(oneDay * 7).AddHours(5),
+                        Comment = $"This is the only complete for b"
                     },
-                    new LogModel
+                    new LogModel("a")
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        UserId = "a",
-                        StartTime = now,
+                        StartTime = now.Subtract(oneDay * 1).AddHours(1),
                         Comment = $"This is comment {++commentCounter}"
-                    }
+                    },
+                    new LogModel("b")
+                    {
+                        StartTime = now.Subtract(oneDay * 2),
+                        Comment = $"This is the open post for b"
+                    },
                 };
                 foreach (var log in ModelsToAdd)
                 {
                     if (log.EndTime != null)
                     {
-                        log.LogTime = log.EndTime - log.StartTime;
+                        log.LogTime = logFactory.CalculateLogTime(log);
                     }
                 }
                 context.LogModel.AddRange(ModelsToAdd);
