@@ -11,6 +11,7 @@ namespace ShiftLoger.Interfaces
         LogModel UpdateLog(LogModel Log);
         List<LogModel> AddLogs(List<LogModel> Log);
         ICollection<LogModel> GetLogsByMonth(string UserId,int Month);
+        ValueTask<LogModel> FindAsync(string Id);
 
     }
 }

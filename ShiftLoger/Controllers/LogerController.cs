@@ -56,13 +56,16 @@ namespace Loger.Controllers
         [HttpPost]
         public LogModel Post(string UserId, string? comment)
         {
-            var newLog= new LogModel(UserId);
             if (string.IsNullOrEmpty(UserId))
             {
                 return null;
             }
             var now = DateTime.Now;
-            var latestLog = _unitOfWork.Log.GetLastLog(UserId);         
+            var latestLog = _unitOfWork.Log.GetLastLog(UserId);
+            var newLog = new LogModel(UserId) {
+                StartTime = latestLog.StartTime,
+                EndTime = now,
+                Comment = comment };
 
             if (latestLog == null || latestLog.EndTime != null)
             {
@@ -72,7 +75,7 @@ namespace Loger.Controllers
             }
 
             List<LogModel> LogsBetweenDates = _logFactory.
-                CreateLogsSpaningDays(UserId,latestLog.StartTime, now, comment);
+                CreateLogsSpaningDays(newLog);
 
             if (LogsBetweenDates.Any())
             {
@@ -110,9 +113,41 @@ namespace Loger.Controllers
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] LogModel Log)
         {
+            if (id != Log.Id)
+            {
+                return BadRequest();
+            }
+            var FoundLogModel = await _unitOfWork.Log.FindAsync(id);
+            if (FoundLogModel == null)
+            {
+                return NotFound();
+            }
+            
+            
+            if (Log.EndTime.Value.Date == Log.StartTime.Date)
+            {
+                //return BadRequest("Dates do not match, do a Put with Start-End Dates");
+                FoundLogModel.StartTime = Log.StartTime;
+                FoundLogModel.EndTime = Log.EndTime.Value;
+                FoundLogModel.LogTime = _logFactory.CalculateLogTime(Log);
+                FoundLogModel.Comment = Log.Comment;
+                _unitOfWork.Log.UpdateLog(FoundLogModel);
+                return Ok(FoundLogModel);
+            }
+            else
+            {
+                var DatesBetweenStartEnd = _logFactory.CreateLogsSpaningDays(Log);
+                DatesBetweenStartEnd.RemoveAt(0);
+                if (DatesBetweenStartEnd.Any())
+                {
+                    DatesBetweenStartEnd.LastOrDefault().EndTime = Log.EndTime;
 
+                }
+                return Ok(FoundLogModel);
+            }
+            return BadRequest();
         }
 
         // DELETE api/<ValuesController>/5

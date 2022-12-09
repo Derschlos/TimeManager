@@ -22,6 +22,10 @@ namespace ShiftLoger.Repositories
             return Logs;
         }
 
+        public async ValueTask<LogModel> FindAsync(string Id)
+        {
+            return await _context.LogModel.FindAsync(Id);
+        }
 
         public LogModel GetLastLog(string UserId)
         {

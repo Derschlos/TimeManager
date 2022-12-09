@@ -15,27 +15,31 @@ namespace ShiftLoger.Factories
             return LogTime.Value;
         }
 
-        public List<LogModel> CreateLogsSpaningDays(string UserId,DateTime Start, DateTime End , string Comment)
+        public List<LogModel> CreateLogsSpaningDays(LogModel Log)
         {
-            var daysBetweenStartAndEnd = (End.Day - Start.Day);
+            if (!Log.EndTime.HasValue)
+            {
+                return null;
+            }
+            var daysBetweenStartAndEnd = (Log.EndTime.Value.Day - Log.StartTime.Day);
             List<LogModel> LogsBetweenDates = Enumerable.Range(1, (int)daysBetweenStartAndEnd).Select(index =>
-                new LogModel(UserId)
+                new LogModel(Log.UserId)
                 {
-                    UserId = UserId,
-                    StartTime = Start.
+                    UserId = Log.UserId,
+                    StartTime = Log.StartTime.
                                     Date.
                                     AddDays(index),
-                    EndTime = Start.
+                    EndTime = Log.StartTime.
                                     Date.
                                     AddDays(index).
                                     AddHours(24).
                                     Subtract(new TimeSpan(1)),
-                    Comment = Comment
+                    Comment = Log.Comment
                 }
                 ).ToList();
-            foreach (var log in LogsBetweenDates)
+            foreach (var logs in LogsBetweenDates)
             {
-                log.LogTime = CalculateLogTime(log);
+                logs.LogTime = CalculateLogTime(logs);
             }
             return LogsBetweenDates;
         }

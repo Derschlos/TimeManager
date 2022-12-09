@@ -6,6 +6,7 @@ namespace ShiftLoger.Interfaces
     {
         TimeSpan CalculateLogTime(LogModel Log);
         LogModel CreateNewLog(string UserId, string Comment);
-        List<LogModel> CreateLogsSpaningDays(string UserId, DateTime Start, DateTime End, string Comment);
+        List<LogModel> CreateLogsSpaningDays(LogModel Log);
+        
     }
 }
