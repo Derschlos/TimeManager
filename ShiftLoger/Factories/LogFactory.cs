@@ -54,5 +54,10 @@ namespace ShiftLoger.Factories
                 Comment = Comment
             };
         }
+
+        public bool IsLogDatesMatch(LogModel Log)
+        {
+            return Log.EndTime.Value.Date == Log.StartTime.Date;
+        }
     }
 }

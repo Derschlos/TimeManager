@@ -35,7 +35,7 @@ namespace Loger.Controllers
         [HttpGet("{UserId}/Month/{Month}")]
         public IEnumerable<LogModel> Get(string UserId, int Month)
         {
-            
+
             return _unitOfWork.Log.GetLogsByMonth(UserId, Month);
         }
 
@@ -100,7 +100,7 @@ namespace Loger.Controllers
             }
             else
             {
-                
+
                 latestLog.EndTime = now;
                 latestLog.LogTime = _logFactory.CalculateLogTime(latestLog);
                 _unitOfWork.Log.UpdateLog(latestLog);
@@ -124,8 +124,8 @@ namespace Loger.Controllers
             {
                 return NotFound();
             }
-            
-            
+
+
             if (Log.EndTime.Value.Date == Log.StartTime.Date)
             {
                 //return BadRequest("Dates do not match, do a Put with Start-End Dates");
@@ -136,24 +136,73 @@ namespace Loger.Controllers
                 _unitOfWork.Log.UpdateLog(FoundLogModel);
                 return Ok(FoundLogModel);
             }
-            else
-            {
-                var DatesBetweenStartEnd = _logFactory.CreateLogsSpaningDays(Log);
-                DatesBetweenStartEnd.RemoveAt(0);
-                if (DatesBetweenStartEnd.Any())
-                {
-                    DatesBetweenStartEnd.LastOrDefault().EndTime = Log.EndTime;
+            //else
+            //{
 
-                }
-                return Ok(FoundLogModel);
-            }
+            //    var DatesBetweenStartEnd = _logFactory.CreateLogsSpaningDays(Log);
+            //    DatesBetweenStartEnd.RemoveAt(0);
+            //    if (DatesBetweenStartEnd.Any())
+            //    {
+            //        DatesBetweenStartEnd.LastOrDefault().EndTime = Log.EndTime;
+
+            //    }
+            //    return Ok(FoundLogModel);
+            //}
             return BadRequest();
+        }
+
+        // PUT api/<ValuesController>/5/UpdateAndAdd
+        [HttpPut("{id}/UpdateAndAdd")]
+        public async Task<IActionResult> Put(string id, [FromBody] List<LogModel> Logs)
+        {
+            var userId = Logs.First().UserId;
+            var differentUserId = Logs.Select(x=> x.UserId != userId).FirstOrDefault();
+            if (differentUserId != null)
+            {
+                return BadRequest("The Logs supplied can't be from different UserIds");
+            }
+            var logToUpdate = Logs.First();
+            if (!_logFactory.IsLogDatesMatch(logToUpdate))
+            {
+                return BadRequest("Start and End Dates of the first Log don't match");
+            }
+            var FoundLogModel = await _unitOfWork.Log.FindAsync(logToUpdate.Id);
+            if (FoundLogModel == null)
+            {
+                return NotFound();
+            }
+            _unitOfWork.Log.UpdateLog(logToUpdate);
+            Logs.RemoveAt(0);
+            List<LogModel> logsToAdd = new List<LogModel>();
+            foreach (var log in Logs)
+            {
+                if (!_logFactory.IsLogDatesMatch(log))
+                {
+                    return BadRequest("One or more results are longer then one Day");
+                }
+                var newLog = new LogModel(log.UserId) {
+                StartTime = log.StartTime,
+                EndTime = log.EndTime,
+                Comment = log.Comment
+                };
+                newLog.LogTime = _logFactory.CalculateLogTime(newLog);
+                logsToAdd.Add(newLog);
+            }
+            _unitOfWork.Log.AddLogs(logsToAdd);
+            return Ok();
         }
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            var foundLog = await _unitOfWork.Log.FindAsync(id);
+            if (foundLog == null)
+            {
+                return NotFound();
+            }
+            _unitOfWork.Log.RemoveLog(foundLog);
+            return Ok();
         }
     }
 }

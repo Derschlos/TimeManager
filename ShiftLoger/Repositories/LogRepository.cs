@@ -55,6 +55,11 @@ namespace ShiftLoger.Repositories
                 Where(log => log.StartTime.Month == Month));
         }
 
+        public void RemoveLog(LogModel Log)
+        {
+            _context.Remove(Log);
+        }
+
         public LogModel UpdateLog(LogModel Log)
         {
             _context.Update(Log);

@@ -12,6 +12,7 @@ namespace ShiftLoger.Interfaces
         List<LogModel> AddLogs(List<LogModel> Log);
         ICollection<LogModel> GetLogsByMonth(string UserId,int Month);
         ValueTask<LogModel> FindAsync(string Id);
+        void RemoveLog(LogModel Log);
 
     }
 }
