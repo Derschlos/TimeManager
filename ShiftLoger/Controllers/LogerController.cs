@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShiftLoger.Contexts;
 using ShiftLoger.Interfaces;
-using ShiftLoger.Models;
+//using ShiftLoger.Models;
 using ShiftLoger.Repositories;
 using System.Linq;
+using TimeManagerClassLibrary.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

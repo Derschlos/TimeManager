@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
 using ShiftLoger.Interfaces;
-using ShiftLoger.Models;
+using TimeManagerClassLibrary.Models;
+//using ShiftLoger.Models;
 
 namespace ShiftLoger.Data
 {

@@ -10,6 +10,6 @@ namespace ShiftLoger.Contexts
         {
         }
 
-        public DbSet<ShiftLoger.Models.LogModel> LogModel { get; set; } = default!;
+        public DbSet<TimeManagerClassLibrary.Models.LogModel> LogModel { get; set; } = default!;
     }
 }

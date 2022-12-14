@@ -1,6 +1,7 @@
 ﻿using ShiftLoger.Contexts;
 using ShiftLoger.Interfaces;
-using ShiftLoger.Models;
+//using ShiftLoger.Models;
+using TimeManagerClassLibrary.Models;
 
 namespace ShiftLoger.Repositories
 {
