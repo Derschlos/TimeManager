@@ -7,6 +7,7 @@ namespace TimeManagerMVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -17,6 +18,7 @@ namespace TimeManagerMVC.Controllers
         {
             return View();
         }
+
 
         public IActionResult Privacy()
         {
