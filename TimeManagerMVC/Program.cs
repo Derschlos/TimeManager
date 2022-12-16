@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TimeManagerMVC.Areas.Identity.Data;
 using TimeManagerMVC.Data;
-
+using TimeManagerMVC.Interfaces;
+using TimeManagerMVC.Reporitories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TimeManagerUserContextConnection") ?? throw new InvalidOperationException("Connection string 'TimeManagerUserContextConnection' not found.");
@@ -15,6 +16,8 @@ builder.Services.AddDefaultIdentity<TimeManagerUser>(options => options.SignIn.R
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+AddScoped();
 
 
 var app = builder.Build();
@@ -40,3 +43,10 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void AddScoped()
+{
+    builder.Services.AddScoped<ILogApiRepository, LogApiRepository>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+}

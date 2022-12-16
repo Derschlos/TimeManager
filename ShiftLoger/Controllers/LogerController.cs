@@ -44,7 +44,7 @@ namespace Loger.Controllers
         [HttpGet("{UserId}")]
         public IEnumerable<LogModel> Get(string UserId)
         {
-            return _unitOfWork.Log.GetLastThreeLogs(UserId);
+            return _unitOfWork.Log.GetCurrentLogs(UserId);
         }
 
 

@@ -5,7 +5,7 @@ namespace ShiftLoger.Interfaces
 {
     public interface ILogRepository
     {
-        ICollection<LogModel> GetLastThreeLogs(string UserId);
+        ICollection<LogModel> GetCurrentLogs(string UserId);
         LogModel GetLastLog(string UserId);
 
         LogModel GetLogById(string id);

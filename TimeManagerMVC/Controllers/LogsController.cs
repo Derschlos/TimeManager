@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using TimeManagerClassLibrary.Models;
+using TimeManagerMVC.Interfaces;
 
 namespace TimeManagerMVC.Controllers
 {
     public class LogsController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _shiftLogApi;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LogsController()
+        public LogsController(IUnitOfWork UnitOfWork)
         {
-            _httpClient = new HttpClient();
-            _shiftLogApi = ConfigurationManager
+            _unitOfWork = UnitOfWork;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-            return View();
+            ICollection<LogModel> Logs = await _unitOfWork.LogApi.GetLogsAsync("b");
+            return View(Logs);
         }
     }
 }

@@ -25,5 +25,6 @@ namespace TimeManagerClassLibrary.Models
 
         [DataType(DataType.Text)]
         public string? Comment { get; set; }
+        
     }
 }
