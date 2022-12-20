@@ -1,11 +1,21 @@
-﻿using ShiftLoger.Interfaces;
+﻿using System.Globalization;
+using TimeManagerClassLibrary.Interfaces;
 //using ShiftLoger.Models;
 using TimeManagerClassLibrary.Models;
 
-namespace ShiftLoger.Factories
+namespace TimeManagerClassLibrary.Factories
 {
     public class LogFactory : ILogFactory
     {
+        private readonly CultureInfo _cultureInfo;
+        private readonly Calendar _calendar;
+        public LogFactory()
+        {
+            // _cultureInfo = new CultureInfo(localisation);
+            _cultureInfo = new CultureInfo("de-DE");
+            _calendar = _cultureInfo.Calendar;
+        }
+
         public TimeSpan CalculateLogTime(LogModel Log)
         {
             if (Log.EndTime == null)
@@ -16,14 +26,23 @@ namespace ShiftLoger.Factories
             return LogTime.Value;
         }
 
+        public int CalculateWeekOfYear(DateTime date)
+        {
+            return _calendar.GetWeekOfYear(
+                date,
+                _cultureInfo.DateTimeFormat.CalendarWeekRule,
+                _cultureInfo.DateTimeFormat.FirstDayOfWeek
+                );
+        }
+
         public List<LogModel> CreateLogsSpaningDays(LogModel Log)
         {
             if (!Log.EndTime.HasValue)
             {
                 return null;
             }
-            var daysBetweenStartAndEnd = (Log.EndTime.Value.Day - Log.StartTime.Day);
-            List<LogModel> LogsBetweenDates = Enumerable.Range(1, (int)daysBetweenStartAndEnd).Select(index =>
+            var daysBetweenStartAndEnd = Log.EndTime.Value.Day - Log.StartTime.Day;
+            List<LogModel> LogsBetweenDates = Enumerable.Range(1, daysBetweenStartAndEnd).Select(index =>
                 new LogModel(Log.UserId)
                 {
                     UserId = Log.UserId,
@@ -35,7 +54,10 @@ namespace ShiftLoger.Factories
                                     AddDays(index).
                                     AddHours(24).
                                     Subtract(new TimeSpan(1)),
-                    Comment = Log.Comment
+                    Comment = Log.Comment,
+                    WeekOfYear = CalculateWeekOfYear(Log.StartTime.
+                                    Date.
+                                    AddDays(index))
                 }
                 ).ToList();
             foreach (var logs in LogsBetweenDates)
@@ -52,7 +74,21 @@ namespace ShiftLoger.Factories
                 Id = Guid.NewGuid().ToString(),
                 UserId = UserId,
                 StartTime = DateTime.Now,
-                Comment = Comment
+                Comment = Comment,
+                WeekOfYear = CalculateWeekOfYear(DateTime.Now)
+            };
+        }
+
+        public LogModel CreateNewLog(DateTime date, string UserId, string Comment)
+            // overload to set StartTime to date
+        {
+            return new LogModel(UserId)
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = UserId,
+                StartTime = date,
+                Comment = Comment,
+                WeekOfYear = CalculateWeekOfYear(date)
             };
         }
 

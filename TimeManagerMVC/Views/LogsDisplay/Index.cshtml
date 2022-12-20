@@ -1,0 +1,37 @@
+﻿@model ICollection<TimeManagerClassLibrary.Models.LogModel>
+@{
+}
+
+<main>
+    <div class="text-center">
+        <h2 class="display-1">Logs</h2>
+            @if (@Model != null && @Model.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">UserId</th>
+                            <th scope="col">Start</th>
+                            <th scope="col">End</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Comment</th>
+                        </tr> 
+                    </thead>
+                    <tbody>
+                        @foreach(var log in Model)
+                        {
+                            <tr>
+                                <th scope="row">@log.Id</th>
+                                <td>@log.UserId</td>
+                                <td>@log.StartTime</td>
+                                <td>@log.EndTime</td>
+                                <td>@log.LogTime</td>
+                                <td>@log.Comment</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+    </div>
+</main>

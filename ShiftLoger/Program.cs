@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
 using ShiftLoger.Data;
-using ShiftLoger.Factories;
 using ShiftLoger.Interfaces;
 using ShiftLoger.Repositories;
+using TimeManagerClassLibrary.Factories;
+using TimeManagerClassLibrary.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

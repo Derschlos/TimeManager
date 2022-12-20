@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftLoger.Contexts;
 
@@ -11,9 +12,10 @@ using ShiftLoger.Contexts;
 namespace ShiftLoger.Migrations
 {
     [DbContext(typeof(ShiftLogerContext))]
-    partial class ShiftLogerContextModelSnapshot : ModelSnapshot
+    [Migration("20221220123457_AddedWeekOfYear")]
+    partial class AddedWeekOfYear
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

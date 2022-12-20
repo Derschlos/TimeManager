@@ -6,11 +6,11 @@ using TimeManagerMVC.Interfaces;
 
 namespace TimeManagerMVC.Controllers
 {
-    public class LogsController : Controller
+    public class LogsDisplayController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public LogsController(IUnitOfWork UnitOfWork)
+        public LogsDisplayController(IUnitOfWork UnitOfWork)
         {
             _unitOfWork = UnitOfWork;
         }

@@ -12,8 +12,6 @@ namespace ShiftLoger.Repositories
         private readonly IQueryable<LogModel> _log;
         private readonly CultureInfo _cultureInfo;
         private readonly Calendar _calendar;
-        private readonly CalendarWeekRule _calendarWeekRule;
-        private readonly DayOfWeek _firstDayOfWeek;
 
         public LogRepository(ShiftLogerContext context)
         {
@@ -21,8 +19,6 @@ namespace ShiftLoger.Repositories
             _log = from l in _context.LogModel select l;
             _cultureInfo = new CultureInfo("de-DE");
             _calendar = _cultureInfo.Calendar;
-            //_calendarWeekRule = _cultureInfo.DateTimeFormat.CalendarWeekRule;
-            //_firstDayOfWeek = _cultureInfo.DateTimeFormat.FirstDayOfWeek;
         }
 
         public List<LogModel> AddLogs(List<LogModel> Logs)
@@ -45,14 +41,15 @@ namespace ShiftLoger.Repositories
         }
 
 
-        public ICollection<LogModel> GetCurrentLogs(string UserId)
+        public async Task<ICollection<LogModel>> GetCurrentLogsAsync(string UserId)
         {
-            var currentWeek = CalculateWeekOfYear(DateTime.Now);
-            return new List<LogModel>(_log.
+            var now = DateTime.Now;
+            var currentWeek = CalculateWeekOfYear(now);
+            return await Task.FromResult(new List<LogModel>(_log.
                 Where(log => log.UserId.Equals(UserId)).
-                Where(Log => currentWeek.Equals(CalculateWeekOfYear(Log.StartTime))).
-                OrderByDescending(log => log.StartTime).ToList());
-                // Take(3));
+                Where(log => log.StartTime.Year == now.Year).
+                Where(Log => currentWeek.Equals(Log.WeekOfYear)).
+                OrderByDescending(log => log.StartTime)));
         }
 
         public LogModel GetLogById(string id)
@@ -60,10 +57,11 @@ namespace ShiftLoger.Repositories
             throw new NotImplementedException();
         }
 
-        public ICollection<LogModel> GetLogsByMonth(string UserId, int Month)
+        public ICollection<LogModel> GetLogsByMonth(string UserId, int Month, int Year)
         {
             return new List<LogModel>(_log.
                 Where(log => log.UserId.Equals(UserId)).
+                Where(log => log.StartTime.Year == Year).
                 Where(log => log.StartTime.Month == Month));
         }
 

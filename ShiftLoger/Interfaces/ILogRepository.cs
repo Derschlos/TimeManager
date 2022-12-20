@@ -5,13 +5,13 @@ namespace ShiftLoger.Interfaces
 {
     public interface ILogRepository
     {
-        ICollection<LogModel> GetCurrentLogs(string UserId);
+        Task<ICollection<LogModel>> GetCurrentLogsAsync(string UserId);
         LogModel GetLastLog(string UserId);
 
         LogModel GetLogById(string id);
         LogModel UpdateLog(LogModel Log);
         List<LogModel> AddLogs(List<LogModel> Log);
-        ICollection<LogModel> GetLogsByMonth(string UserId,int Month);
+        ICollection<LogModel> GetLogsByMonth(string UserId,int Month, int Year);
         ValueTask<LogModel> FindAsync(string Id);
         void RemoveLog(LogModel Log);
 

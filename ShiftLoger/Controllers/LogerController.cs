@@ -4,6 +4,7 @@ using ShiftLoger.Interfaces;
 //using ShiftLoger.Models;
 using ShiftLoger.Repositories;
 using System.Linq;
+using TimeManagerClassLibrary.Interfaces;
 using TimeManagerClassLibrary.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,39 +18,32 @@ namespace Loger.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogFactory _logFactory;
 
-
-        //private readonly ShiftLogerContext _context;
-
-        //public LogerController(ShiftLogerContext context)
-        //{
-        //    _context = context;
-        //}
-
         public LogerController(IUnitOfWork unitOfWork, ILogFactory logFactory)
         {
             _unitOfWork = unitOfWork;
             _logFactory = logFactory;
         }
 
-        //GET: api/<ValuesController>/587-342/Month/12
+        //GET: api/<ValuesController>/587-342/Month/12/Year/2022
         // GetLogs for a given Month
-        [HttpGet("{UserId}/Month/{Month}")]
-        public IEnumerable<LogModel> Get(string UserId, int Month)
+        [HttpGet("{UserId}/Month/{Month}/Year/{Year}")]
+        public IEnumerable<LogModel> Get(string UserId, int Month, int Year)
         {
 
-            return _unitOfWork.Log.GetLogsByMonth(UserId, Month);
+            return _unitOfWork.Log.GetLogsByMonth(UserId, Month, Year);
         }
 
         // GET api/<ValuesController>/5
         [HttpGet("{UserId}")]
-        public IEnumerable<LogModel> Get(string UserId)
+        public async Task<IEnumerable<LogModel>> Get(string UserId)
         {
-            return _unitOfWork.Log.GetCurrentLogs(UserId);
+            return await _unitOfWork.Log.GetCurrentLogsAsync(UserId);
         }
 
 
         // POST api/<ValuesController>
         //[FromBody] int Id
+
         // Checks if a Log without EndTime exists, then either creates a new Log or
         // fills the Db with Logs till the EndDate is reached.
         // You can only have logs from Hour 0 to 24 of any given Day
@@ -63,12 +57,11 @@ namespace Loger.Controllers
             }
             var now = DateTime.Now;
             var latestLog = _unitOfWork.Log.GetLastLog(UserId);
-            var newLog = new LogModel(UserId) {
-                StartTime = latestLog.StartTime,
-                EndTime = now,
-                Comment = comment };
+            var newLog = _logFactory.CreateNewLog(latestLog.StartTime, UserId, comment);
+            newLog.EndTime = now;
 
-            if (latestLog == null || latestLog.EndTime != null)
+            if (latestLog == null || latestLog.EndTime != null) 
+                // no open Logs
             {
                 newLog = _logFactory.CreateNewLog(UserId, comment);
                 _unitOfWork.Log.AddLogs(new List<LogModel> { newLog });
@@ -79,6 +72,7 @@ namespace Loger.Controllers
                 CreateLogsSpaningDays(newLog);
 
             if (LogsBetweenDates.Any())
+                // log start day != log end day
             {
                 latestLog.EndTime = latestLog.
                     StartTime.
@@ -134,6 +128,7 @@ namespace Loger.Controllers
                 FoundLogModel.EndTime = Log.EndTime.Value;
                 FoundLogModel.LogTime = _logFactory.CalculateLogTime(Log);
                 FoundLogModel.Comment = Log.Comment;
+                FoundLogModel.WeekOfYear = _logFactory.CalculateWeekOfYear(Log.StartTime);
                 _unitOfWork.Log.UpdateLog(FoundLogModel);
                 return Ok(FoundLogModel);
             }
@@ -158,15 +153,18 @@ namespace Loger.Controllers
         {
             var userId = Logs.First().UserId;
             var differentUserId = Logs.Select(x=> x.UserId != userId).FirstOrDefault();
+
             if (differentUserId != null)
             {
                 return BadRequest("The Logs supplied can't be from different UserIds");
             }
+
             var logToUpdate = Logs.First();
             if (!_logFactory.IsLogDatesMatch(logToUpdate))
             {
                 return BadRequest("Start and End Dates of the first Log don't match");
             }
+
             var FoundLogModel = await _unitOfWork.Log.FindAsync(logToUpdate.Id);
             if (FoundLogModel == null)
             {
@@ -181,11 +179,8 @@ namespace Loger.Controllers
                 {
                     return BadRequest("One or more results are longer then one Day");
                 }
-                var newLog = new LogModel(log.UserId) {
-                StartTime = log.StartTime,
-                EndTime = log.EndTime,
-                Comment = log.Comment
-                };
+                var newLog = _logFactory.CreateNewLog(log.StartTime, log.UserId, log.Comment);
+                newLog.EndTime = log.EndTime;
                 newLog.LogTime = _logFactory.CalculateLogTime(newLog);
                 logsToAdd.Add(newLog);
             }

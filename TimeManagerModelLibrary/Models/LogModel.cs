@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TimeManagerClassLibrary.Factories;
 
 namespace TimeManagerClassLibrary.Models
 {
@@ -25,6 +26,6 @@ namespace TimeManagerClassLibrary.Models
 
         [DataType(DataType.Text)]
         public string? Comment { get; set; }
-        
+        public int? WeekOfYear { get; set; }
     }
 }

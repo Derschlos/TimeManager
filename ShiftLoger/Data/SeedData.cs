@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ShiftLoger.Contexts;
-using ShiftLoger.Interfaces;
+using TimeManagerClassLibrary.Interfaces;
 using TimeManagerClassLibrary.Models;
 //using ShiftLoger.Models;
 
@@ -59,9 +59,11 @@ namespace ShiftLoger.Data
                 };
                 foreach (var log in ModelsToAdd)
                 {
+                    log.WeekOfYear = logFactory.CalculateWeekOfYear(log.StartTime);
                     if (log.EndTime != null)
                     {
                         log.LogTime = logFactory.CalculateLogTime(log);
+                        
                     }
                 }
                 context.LogModel.AddRange(ModelsToAdd);
