@@ -15,9 +15,10 @@ namespace TimeManagerMVC.Controllers
             _unitOfWork = UnitOfWork;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string UserId)
         {
-            ICollection<LogModel> Logs = await _unitOfWork.LogApi.GetLogsAsync("b");
+            // Console.WriteLine(User.Identity.Name);
+            ICollection<LogModel> Logs = await _unitOfWork.LogApi.GetLogsAsync(UserId);
             return View(Logs);
         }
     }

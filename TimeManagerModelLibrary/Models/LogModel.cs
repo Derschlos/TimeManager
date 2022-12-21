@@ -27,5 +27,6 @@ namespace TimeManagerClassLibrary.Models
         [DataType(DataType.Text)]
         public string? Comment { get; set; }
         public int? WeekOfYear { get; set; }
+        public string? LogType { get; set; }
     }
 }

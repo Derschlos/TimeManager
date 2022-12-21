@@ -24,9 +24,9 @@ namespace Loger.Controllers
             _logFactory = logFactory;
         }
 
-        //GET: api/<ValuesController>/587-342/Month/12/Year/2022
+        //GET: api/<ValuesController>/587-342/12/2022
         // GetLogs for a given Month
-        [HttpGet("{UserId}/Month/{Month}/Year/{Year}")]
+        [HttpGet("{UserId}/{Month}/{Year}")]
         public IEnumerable<LogModel> Get(string UserId, int Month, int Year)
         {
 
@@ -57,7 +57,7 @@ namespace Loger.Controllers
             }
             var now = DateTime.Now;
             var latestLog = _unitOfWork.Log.GetLastLog(UserId);
-            var newLog = _logFactory.CreateNewLog(latestLog.StartTime, UserId, comment);
+            var newLog = _logFactory.CreateNewLogStartTime(latestLog.StartTime, UserId, comment);
             newLog.EndTime = now;
 
             if (latestLog == null || latestLog.EndTime != null) 
@@ -179,7 +179,7 @@ namespace Loger.Controllers
                 {
                     return BadRequest("One or more results are longer then one Day");
                 }
-                var newLog = _logFactory.CreateNewLog(log.StartTime, log.UserId, log.Comment);
+                var newLog = _logFactory.CreateNewLogStartTime(log.StartTime, log.UserId, log.Comment);
                 newLog.EndTime = log.EndTime;
                 newLog.LogTime = _logFactory.CalculateLogTime(newLog);
                 logsToAdd.Add(newLog);

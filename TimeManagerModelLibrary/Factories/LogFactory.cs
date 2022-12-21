@@ -9,11 +9,15 @@ namespace TimeManagerClassLibrary.Factories
     {
         private readonly CultureInfo _cultureInfo;
         private readonly Calendar _calendar;
+        //public string localisation { get; set; }
+
         public LogFactory()
         {
             // _cultureInfo = new CultureInfo(localisation);
             _cultureInfo = new CultureInfo("de-DE");
             _calendar = _cultureInfo.Calendar;
+            //localisation = "de-DE"; 
+            // German default language
         }
 
         public TimeSpan CalculateLogTime(LogModel Log)
@@ -79,7 +83,7 @@ namespace TimeManagerClassLibrary.Factories
             };
         }
 
-        public LogModel CreateNewLog(DateTime date, string UserId, string Comment)
+        public LogModel CreateNewLogStartTime(DateTime date, string UserId, string Comment)
             // overload to set StartTime to date
         {
             return new LogModel(UserId)
@@ -95,6 +99,25 @@ namespace TimeManagerClassLibrary.Factories
         public bool IsLogDatesMatch(LogModel Log)
         {
             return Log.EndTime.Value.Date == Log.StartTime.Date;
+        }
+
+        public List<string> LogTypes()
+        {
+            //Thread.CurrentThread.CurrentCulture = Cu
+            return new List<string>()
+            {
+                "Arbeitszeit",
+                "Berufsschule",
+                "Freistellung nach Kündigung",
+                "Krankheit Std.",
+                "Krankheit Tag",
+                "Mutterschutz",
+                "Pause",
+                "Sonderurlaub",
+                "Überstundenausgleich",
+                "Urlaub Std."
+                
+            };
         }
     }
 }
