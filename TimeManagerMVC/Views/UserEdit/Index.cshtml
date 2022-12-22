@@ -1,0 +1,38 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Users Page";
+}
+@model ICollection<TimeManagerMVC.Areas.Identity.Data.TimeManagerUser>
+@*<h2>Index:Users</h2>*@
+@*
+<p>Hello Users Page</p>*@
+
+<div class="text-center">
+    <h1 class="display-4">Users</h1>
+    @if (@Model != null && @Model.Any())
+    {
+        <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">E-Mail</th>
+      <th scope="col">Edit</th>
+    </tr>
+  </thead>
+  <tbody>
+      @foreach(var user in Model)
+      {
+        <tr>
+          <th scope="row">@user.Id</th>
+          <td>@user.UserName</td>
+          <td>@user.Email</td>
+          <td><a asp-controller="UserEdit" asp-action="Edit" asp-route-id="@user.Id">Edit</a></td>
+        </tr>
+      }
+  </tbody>
+</table>
+    }
+</div>

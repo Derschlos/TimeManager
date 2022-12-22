@@ -9,6 +9,7 @@ namespace TimeManagerClassLibrary.Factories
     {
         private readonly CultureInfo _cultureInfo;
         private readonly Calendar _calendar;
+        public List<string> logTypes { get; set; }
         //public string localisation { get; set; }
 
         public LogFactory()
@@ -16,6 +17,7 @@ namespace TimeManagerClassLibrary.Factories
             // _cultureInfo = new CultureInfo(localisation);
             _cultureInfo = new CultureInfo("de-DE");
             _calendar = _cultureInfo.Calendar;
+            logTypes = LogTypes();
             //localisation = "de-DE"; 
             // German default language
         }
@@ -61,7 +63,8 @@ namespace TimeManagerClassLibrary.Factories
                     Comment = Log.Comment,
                     WeekOfYear = CalculateWeekOfYear(Log.StartTime.
                                     Date.
-                                    AddDays(index))
+                                    AddDays(index)),
+                    LogType = Log.LogType,
                 }
                 ).ToList();
             foreach (var logs in LogsBetweenDates)
@@ -79,7 +82,8 @@ namespace TimeManagerClassLibrary.Factories
                 UserId = UserId,
                 StartTime = DateTime.Now,
                 Comment = Comment,
-                WeekOfYear = CalculateWeekOfYear(DateTime.Now)
+                WeekOfYear = CalculateWeekOfYear(DateTime.Now),
+                LogType = logTypes.FirstOrDefault(),
             };
         }
 
@@ -92,7 +96,8 @@ namespace TimeManagerClassLibrary.Factories
                 UserId = UserId,
                 StartTime = date,
                 Comment = Comment,
-                WeekOfYear = CalculateWeekOfYear(date)
+                WeekOfYear = CalculateWeekOfYear(date),
+                LogType = logTypes.FirstOrDefault(),
             };
         }
 

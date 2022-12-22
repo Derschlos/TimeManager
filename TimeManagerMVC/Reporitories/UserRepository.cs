@@ -23,6 +23,11 @@ namespace TimeManagerMVC.Reporitories
             return _context.Users.FirstOrDefault(u => u.Id == Id);
         }
 
+        public TimeManagerUser GetUserByUsername(string username)
+        {
+            return _context.Users.FirstOrDefault(u => u.UserName == username);
+        }
+
         public TimeManagerUser UpdateUser(TimeManagerUser user)
         {
             _context.Update(user);

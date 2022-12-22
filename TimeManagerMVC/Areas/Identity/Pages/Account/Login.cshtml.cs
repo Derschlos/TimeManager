@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TimeManagerMVC.Areas.Identity.Data;
+using System.Security.Claims;
 
 namespace TimeManagerMVC.Areas.Identity.Pages.Account
 {
@@ -110,12 +111,31 @@ namespace TimeManagerMVC.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
+                    return Page();
+                }
+                var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, false);
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var claims = new Claim[]
+                    {
+                        new Claim("amr", "pwd"),
+                        //new Claim("EmployeeNumber", "1")
+                    };
+                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
+                    if (roles.Any())
+                    {
+                        var roleClaim = string.Join(",", roles);
+                        claims.Append(new Claim("Roles", roleClaim));
+                    }
+
+                    await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

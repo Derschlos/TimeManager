@@ -7,5 +7,6 @@ namespace TimeManagerMVC.Interfaces
         ICollection<TimeManagerUser> GetTimeManagerUsers();
         TimeManagerUser GetUserById(string Id);
         TimeManagerUser UpdateUser(TimeManagerUser user);
+        TimeManagerUser GetUserByUsername(string username);
     }
 }
