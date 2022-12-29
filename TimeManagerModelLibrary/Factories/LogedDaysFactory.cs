@@ -43,7 +43,7 @@ namespace TimeManagerClassLibrary.Factories
             }
             foreach (var date in logedDaysDict)
             {
-                logedDaysList.Add(new LogedDaysModel(date.Value));
+                //logedDaysList.Add(new LogedDaysModel(date.Value));
             }
             return logedDaysList;
         }

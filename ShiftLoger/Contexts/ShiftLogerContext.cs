@@ -11,5 +11,6 @@ namespace ShiftLoger.Contexts
         }
 
         public DbSet<TimeManagerClassLibrary.Models.LogModel> LogModel { get; set; } = default!;
+        public DbSet<TimeManagerClassLibrary.Models.LogedDaysModel> LogedDays { get; set; } = default!;
     }
 }

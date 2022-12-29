@@ -22,6 +22,7 @@ namespace TimeManagerClassLibrary.Factories
             // German default language
         }
 
+        // Calculates the LogTime from End-Start
         public TimeSpan CalculateLogTime(LogModel Log)
         {
             if (Log.EndTime == null)
@@ -32,6 +33,8 @@ namespace TimeManagerClassLibrary.Factories
             return LogTime.Value;
         }
 
+        // gets the Week number of a given Date
+        // TODO: localisation
         public int CalculateWeekOfYear(DateTime date)
         {
             return _calendar.GetWeekOfYear(
@@ -41,6 +44,10 @@ namespace TimeManagerClassLibrary.Factories
                 );
         }
 
+        // Seperates a log having different Start and End dates into a list.
+        // one Log per day such that the Start time is >00:00
+        // and the End time is <23:59:59
+        // thus making sure the Log time is never over 24H
         public List<LogModel> CreateLogsSpaningDays(LogModel Log)
         {
             if (!Log.EndTime.HasValue)
@@ -101,6 +108,7 @@ namespace TimeManagerClassLibrary.Factories
             };
         }
 
+        // checks if the Start and End time are on the same date
         public bool IsLogDatesMatch(LogModel Log)
         {
             return Log.EndTime.Value.Date == Log.StartTime.Date;

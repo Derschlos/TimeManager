@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TimeManagerClassLibrary.Models
 {
     [NotMapped]
-    internal class LogedDaysDTOModel
+    public class LogedDaysDTOModel
     {
         public ICollection<LogModel> Logs { get; set; }
         public DateTime Date { get; set; }
