@@ -10,17 +10,15 @@ namespace TimeManagerClassLibrary.Factories
 {
     internal class LogedDaysFactory : ILogedDaysFactory
     {
-
-
-        public LogedDaysDTOModel CreateDTOModel(LogedDaysModel LogedDay, ICollection<LogModel> Logs)
-        {
-            return new LogedDaysDTOModel() {
-                Logs = Logs,
-                Date = LogedDay.Date,
-                WeekOfYear = LogedDay.WeekOfYear,
-                TimeLoged = LogedDay.TimeLoged,
-            };
-        }
+        //public LogedDaysDTOModel CreateDTOModel(LogedDaysModel LogedDay, ICollection<LogModel> Logs)
+        //{
+        //    return new LogedDaysDTOModel() {
+        //        Logs = Logs,
+        //        Date = LogedDay.Date,
+        //        WeekOfYear = LogedDay.WeekOfYear,
+        //        TimeLoged = LogedDay.TimeLoged,
+        //    };
+        //}
 
 
         // Creates a Collection of LogedDaysModels out of a collection of Logs
@@ -43,7 +41,7 @@ namespace TimeManagerClassLibrary.Factories
             }
             foreach (var date in logedDaysDict)
             {
-                //logedDaysList.Add(new LogedDaysModel(date.Value));
+                logedDaysList.Add(new LogedDaysModel(date.Value));
             }
             return logedDaysList;
         }

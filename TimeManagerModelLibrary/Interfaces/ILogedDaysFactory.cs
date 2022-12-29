@@ -10,6 +10,6 @@ namespace TimeManagerClassLibrary.Interfaces
     internal interface ILogedDaysFactory
     {
         ICollection<LogedDaysModel> CreateLogedDays(ICollection<LogModel> Logs);
-        LogedDaysDTOModel CreateDTOModel(LogedDaysModel LogedDay, ICollection<LogModel> Logs);
+        //LogedDaysDTOModel CreateDTOModel(LogedDaysModel LogedDay, ICollection<LogModel> Logs);
     }
 }
