@@ -51,4 +51,6 @@ void AddScoped()
     builder.Services.AddScoped<ILogRepository, LogRepository>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddScoped<ILogFactory, LogFactory>();
+    builder.Services.AddScoped<ILogedDaysFactory, LogedDaysFactory>();
+    builder.Services.AddScoped<IWorkFactories, WorkFactories>();
 }

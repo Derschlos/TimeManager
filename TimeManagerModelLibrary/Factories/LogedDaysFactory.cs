@@ -8,7 +8,7 @@ using TimeManagerClassLibrary.Models;
 
 namespace TimeManagerClassLibrary.Factories
 {
-    internal class LogedDaysFactory : ILogedDaysFactory
+    public class LogedDaysFactory : ILogedDaysFactory
     {
         //public LogedDaysDTOModel CreateDTOModel(LogedDaysModel LogedDay, ICollection<LogModel> Logs)
         //{
