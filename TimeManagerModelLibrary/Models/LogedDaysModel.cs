@@ -19,7 +19,7 @@ namespace TimeManagerClassLibrary.Models
         {
             this.Logs = Logs;
             Date = Logs.FirstOrDefault().StartTime;
-            TimeLoged = new TimeSpan(Logs.Sum(l => l.LogTime.Value.Ticks));
+            TimeLoged = new TimeSpan(Logs.Where(l =>l.LogTime != null).Sum(l => l.LogTime.Value.Ticks));
             WeekOfYear = (int)Logs.FirstOrDefault().WeekOfYear;
         }
     }

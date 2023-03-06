@@ -1,4 +1,4 @@
-﻿@model ICollection<TimeManagerClassLibrary.Models.LogModel>
+﻿@model ICollection<TimeManagerClassLibrary.Models.LogedDaysModel>
 @{
 }
 
@@ -19,8 +19,10 @@
                         </tr> 
                     </thead>
                     <tbody>
-                        @foreach(var log in Model)
+                        @foreach(var day in Model)
                         {
+                            @foreach (var log in day.Logs)
+                            {
                             <tr>
                                 <th scope="row">@log.Id</th>
                                 <td>@log.UserId</td>
@@ -29,7 +31,8 @@
                                 <td>@log.LogTime</td>
                                 <td>@log.Comment</td>
                             </tr>
-                        }
+                            }
+                    }
                     </tbody>
                 </table>
             }

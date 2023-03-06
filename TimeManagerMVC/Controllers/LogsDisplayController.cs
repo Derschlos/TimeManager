@@ -27,7 +27,7 @@ namespace TimeManagerMVC.Controllers
             {
                 return NotFound();
             }
-            ICollection<LogModel> Logs = await _unitOfWork.LogApi.GetLogsAsync(user.Id);
+            ICollection<LogedDaysModel> Logs = await _unitOfWork.LogApi.GetLogsAsync(user.Id);
             return View(Logs);
         }
         public async Task<IActionResult> LogHistory(int Month, int Year)
@@ -38,7 +38,7 @@ namespace TimeManagerMVC.Controllers
             {
                 return NotFound();
             }
-            ICollection<LogModel> Logs = await _unitOfWork.LogApi.
+            ICollection<LogedDaysModel> Logs = await _unitOfWork.LogApi.
                 GetLogsByMonthAsync(user.Id, Month, Year);
             return View(Logs);
         }

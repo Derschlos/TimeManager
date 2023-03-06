@@ -4,8 +4,10 @@ namespace TimeManagerMVC.Interfaces
 {
     public interface ILogApiRepository
     {
-        Task<ICollection<LogModel>> GetLogsAsync(string UserId);
-        Task<ICollection<LogModel>> GetLogsByMonthAsync(string UserId, int Month, int Year);
-        Task<ICollection<LogModel>> ParseResponseAsync(HttpResponseMessage Response);
+        Task<ICollection<LogedDaysModel>> GetLogsAsync(string UserId);
+        Task<ICollection<LogedDaysModel>> GetLogsByMonthAsync(string UserId, int Month, int Year);
+        Task<ICollection<LogedDaysModel>> ParseResponseAsync(HttpResponseMessage Response);
+  
+
     }
 }

@@ -17,14 +17,14 @@ namespace TimeManagerMVC.Reporitories
             _baseLogUri = $"{_shiftLogApi["ConnectionType"]}://{_shiftLogApi["Host"]}:{_shiftLogApi["Port"]}/ShiftLoger/Loger";
         }
 
-        public async Task<ICollection<LogModel>> GetLogsAsync(string UserId)
+        public async Task<ICollection<LogedDaysModel>> GetLogsAsync(string UserId)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 $"{_baseLogUri}/{UserId}");
             return await ParseResponseAsync(response);
         }
 
-        public async Task<ICollection<LogModel>> GetLogsByMonthAsync(string UserId, int Month, int Year)
+        public async Task<ICollection<LogedDaysModel>> GetLogsByMonthAsync(string UserId, int Month, int Year)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(
                 $"{_baseLogUri}/{UserId}/{Month}/{Year}");
@@ -34,7 +34,7 @@ namespace TimeManagerMVC.Reporitories
 
 
 
-        public async Task<ICollection<LogModel>> ParseResponseAsync(HttpResponseMessage Response)
+        public async Task<ICollection<LogedDaysModel>> ParseResponseAsync(HttpResponseMessage Response)
         {
             try
             {
@@ -42,11 +42,11 @@ namespace TimeManagerMVC.Reporitories
             }
             catch (Exception)
             {
-                ICollection<LogModel> noLogs = new List<LogModel>();
+                ICollection<LogedDaysModel> noLogs = new List<LogedDaysModel>();
                 return noLogs;
             }
             string responseBody = await Response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ICollection<LogModel>>(responseBody);
+            return JsonConvert.DeserializeObject<ICollection<LogedDaysModel>>(responseBody);
         }
     }
 }
