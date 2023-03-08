@@ -18,6 +18,7 @@ namespace TimeManagerMVC.Controllers
         {
             _unitOfWork = UnitOfWork;
         }
+        public string month = "55";
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -59,9 +60,9 @@ namespace TimeManagerMVC.Controllers
             return View(Logs);
         }
         [HttpPost("/LogsDisplay/History")]
-        public async Task<IActionResult> PostLogHistory(int Month, int Year)
+        public async Task<IActionResult> SetMonthYear(int Month, int Year)
         {
-            return RedirectToAction("LogHistory", new { Month = Month,Year = Year});
+            return RedirectToAction("GetLogHistory", new { Month = 3,Year = Year});
         }
     }
 }

@@ -21,9 +21,11 @@
             <th>Bemerkung</th>
         </tr>*@
 
-@using(Html.BeginForm("PostLogsHistory", "LogsDisplay"))
+@using (Html.BeginForm("SetMonthYear", "LogsDisplay", FormMethod.Post))
 {
-    
+    <input type="number" name="Month"  value="14"/>
+    <input type="number" name="Year"  value="2023"/>
+    <button type="submit" class="btn btn-primary" value="">View</button>
 }
 
 
