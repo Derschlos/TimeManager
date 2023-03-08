@@ -7,6 +7,7 @@ namespace TimeManagerMVC.Interfaces
         Task<ICollection<LogedDaysModel>> GetLogsAsync(string UserId);
         Task<ICollection<LogedDaysModel>> GetLogsByMonthAsync(string UserId, int Month, int Year);
         Task<ICollection<LogedDaysModel>> ParseResponseAsync(HttpResponseMessage Response);
+        Task<LogModel> PostStartStopLogAsync(string UserId);
   
 
     }

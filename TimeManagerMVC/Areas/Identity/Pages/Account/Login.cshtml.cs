@@ -105,7 +105,7 @@ namespace TimeManagerMVC.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            //returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -137,7 +137,8 @@ namespace TimeManagerMVC.Areas.Identity.Pages.Account
 
                     await _signInManager.SignInWithClaimsAsync(user, Input.RememberMe, claims);
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    //return LocalRedirect(returnUrl);
+                    return LocalRedirect(returnUrl ?? "/UserEdit");
                 }
                 if (result.RequiresTwoFactor)
                 {

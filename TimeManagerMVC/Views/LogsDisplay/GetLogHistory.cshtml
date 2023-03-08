@@ -1,0 +1,69 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ICollection<TimeManagerClassLibrary.Models.LogedDaysModel>
+@{    
+}
+
+
+<h2 class="display-1">Logs History</h2>
+@*<table>
+    <thead>
+        <tr>
+            <th>Woche</th>
+            <th>Datum</th>
+            <th>Soll</th>
+            <th>Ist</th>
+            <th>Start</th>
+            <th>Ende</th>
+            <th>Zeit</th>
+            <th>Zeitart</th>
+            <th>Bemerkung</th>
+        </tr>*@
+
+@using(Html.BeginForm("PostLogsHistory", "LogsDisplay"))
+{
+    
+}
+
+
+@if (@Model != null && @Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Woche</th>
+                <th scope="col">Datum</th>
+                <th scope="col">Soll</th>
+                <th scope="col">Ist</th>
+                <th scope="col">Start</th>
+                <th scope="col">Ende</th>
+                <th scope="col">Zeit</th>
+                <th scope="col">Zeitart</th>
+                <th scope="col">Bemerkung</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var day in Model)
+            {
+                <tr>
+                    <th scope="row">@day.WeekOfYear</th>
+                    @foreach (var log in day.Logs)
+                    {
+                        <tr>
+                            <th scope="row">@log.Id</th>
+                            <td>@log.UserId</td>
+                            <td>@log.StartTime</td>
+                            <td>@log.EndTime</td>
+                            <td>@log.LogTime</td>
+                            <td>@log.Comment</td>
+                        </tr>
+                    }
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+@*    </div>
+</main>*@

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using TimeManagerClassLibrary.Models;
@@ -18,7 +19,7 @@ namespace TimeManagerMVC.Controllers
             _unitOfWork = UnitOfWork;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var username = User.Identity.Name;
@@ -30,7 +31,22 @@ namespace TimeManagerMVC.Controllers
             ICollection<LogedDaysModel> Logs = await _unitOfWork.LogApi.GetLogsAsync(user.Id);
             return View(Logs);
         }
-        public async Task<IActionResult> LogHistory(int Month, int Year)
+
+        [HttpPost]
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var username = User.Identity.Name;
+            var user = _unitOfWork.Users.GetUserByUsername(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _unitOfWork.LogApi.PostStartStopLogAsync(user.Id);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet("/LogsDisplay/History")]
+        public async Task<IActionResult> GetLogHistory(int Month, int Year)
         {
             var username = User.Identity.Name;
             var user = _unitOfWork.Users.GetUserByUsername(username);
@@ -41,6 +57,11 @@ namespace TimeManagerMVC.Controllers
             ICollection<LogedDaysModel> Logs = await _unitOfWork.LogApi.
                 GetLogsByMonthAsync(user.Id, Month, Year);
             return View(Logs);
+        }
+        [HttpPost("/LogsDisplay/History")]
+        public async Task<IActionResult> PostLogHistory(int Month, int Year)
+        {
+            return RedirectToAction("LogHistory", new { Month = Month,Year = Year});
         }
     }
 }

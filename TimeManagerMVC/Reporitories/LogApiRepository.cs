@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+using System.Text;
 using TimeManagerClassLibrary.Models;
 using TimeManagerMVC.Interfaces;
 
@@ -47,6 +49,23 @@ namespace TimeManagerMVC.Reporitories
             }
             string responseBody = await Response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ICollection<LogedDaysModel>>(responseBody);
+        }
+
+        public async Task<LogModel> PostStartStopLogAsync(string UserId)
+        {
+            var content = new StringContent(UserId, Encoding.UTF8);
+            HttpResponseMessage response = await _httpClient.PostAsync($"{_baseLogUri}?UserId={UserId}",content);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+                LogModel noLogs = new LogModel(UserId);                               
+                return noLogs;
+            }
+            string responseBody = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<LogModel>(responseBody);
         }
     }
 }

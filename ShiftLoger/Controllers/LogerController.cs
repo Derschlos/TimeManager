@@ -51,6 +51,7 @@ namespace Loger.Controllers
         // fills the Db with Logs till the EndDate is reached.
         // You can only have logs from Hour 0 to 24 of any given Day
 
+        //[HttpPost("{UserId}")]
         [HttpPost]
         public LogModel Post(string UserId, string? comment)
         {
@@ -60,16 +61,18 @@ namespace Loger.Controllers
             }
             var now = DateTime.Now;
             var latestLog = _unitOfWork.Log.GetLastLog(UserId);
-            var newLog = _workFactories.Log.CreateNewLogStartTime(latestLog.StartTime, UserId, comment);
-            newLog.EndTime = now;
-
-            if (latestLog == null || latestLog.EndTime != null) 
-                // no open Logs
+            var newLog = new LogModel(UserId);
+            if (latestLog == null || latestLog.EndTime != null)
+            // no open Logs
             {
                 newLog = _workFactories.Log.CreateNewLog(UserId, comment);
                 _unitOfWork.Log.AddLogs(new List<LogModel> { newLog });
                 return newLog;
             }
+            newLog = _workFactories.Log.CreateNewLogStartTime(latestLog.StartTime, UserId, comment);
+            newLog.EndTime = now;
+
+            
 
             List<LogModel> LogsBetweenDates = _workFactories.Log.
                 CreateLogsSpaningDays(newLog);

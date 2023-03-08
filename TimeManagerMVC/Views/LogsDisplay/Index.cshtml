@@ -4,6 +4,18 @@
 
 <main>
     <div class="text-center">
+        @*<form action="/LogsDisplay/OnPost" method="post"><button action="post">Submitnew</button></form>*@
+        @*<form asp-action="OnPost" asp-area="" asp-controller="LogsDisplay">
+        <button action="post">Log Start/Stop</button>
+        </form>*@
+        @using (Html.BeginForm("OnPost", "LogsDisplay", FormMethod.Post))
+        {
+            <div class="form-group">
+                <label>Comment</label>
+                <input type="text" name="Comment" />
+                <button type="submit" class="btn btn-primary"  value="Start/Stop">Start/Stop</button>
+            </div>
+        }
         <h2 class="display-1">Logs</h2>
             @if (@Model != null && @Model.Any())
             {
