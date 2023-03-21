@@ -21,7 +21,7 @@
             <th>Bemerkung</th>
         </tr>*@
 
-@using (Html.BeginForm("SetMonthYear", "LogsDisplay", FormMethod.Post))
+@using (Html.BeginForm("history", "LogsDisplay", FormMethod.Get))
 {
     <input type="number" name="Month"  value="14"/>
     <input type="number" name="Year"  value="2023"/>
@@ -49,11 +49,12 @@
             @foreach (var day in Model)
             {
                 <tr>
-                    <th scope="row">@day.WeekOfYear</th>
+                    <td scope="row" rowspan="@day.Logs.Count">@day.WeekOfYear</td>
                     @foreach (var log in day.Logs)
                     {
                         <tr>
-                            <th scope="row">@log.Id</th>
+                            @*<td scope="row">@day.WeekOfYear</td>*@
+                            <td>@log.Id</td>
                             <td>@log.UserId</td>
                             <td>@log.StartTime</td>
                             <td>@log.EndTime</td>

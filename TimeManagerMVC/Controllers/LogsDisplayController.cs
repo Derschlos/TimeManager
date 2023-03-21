@@ -59,10 +59,11 @@ namespace TimeManagerMVC.Controllers
                 GetLogsByMonthAsync(user.Id, Month, Year);
             return View(Logs);
         }
-        [HttpPost("/LogsDisplay/History")]
-        public async Task<IActionResult> SetMonthYear(int Month, int Year)
-        {
-            return RedirectToAction("GetLogHistory", new { Month = 3,Year = Year});
-        }
+
+//        [HttpPost("/LogsDisplay/History")]
+//        public async Task<IActionResult> SetMonthYear(int Month, int Year)
+//        {
+//            return RedirectToAction("GetLogHistory", new { Month = Month,Year = Year});
+//        }
     }
 }
